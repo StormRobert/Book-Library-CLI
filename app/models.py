@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
 
@@ -13,10 +12,17 @@ class User(Base):
     date_of_birth = Column(DateTime)
     address = Column(String)
     phone_number = Column(String)
-    membership_status = Column(String)
+  
     
 
+    def __init__(self,email,full_name,date_of_birth,address,phone_number):
+     self.email = email
+     self.full_name = full_name
+     self.date_of_birth =date_of_birth
+     self.address = address
+     self.phone_number = phone_number
+   
 
     # Define the relationship with Book
-    books = relationship('Book', back_populates='owner')
+   
 
