@@ -24,3 +24,7 @@ class Book(Base):
         self.genre = genre
         self.availability = availability
 
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+session = Session()
+
