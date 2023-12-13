@@ -57,17 +57,17 @@ class BookLibrary:
 
 library = BookLibrary()
 
-# Adding books
-book1 = Book("The Great Gatsby", "F. Scott Fitzgerald", "1925-04-10", "Fiction")
-book2 = Book("To Kill a Mockingbird", "Harper Lee", "1960-07-11", "Fiction")
-library.add_book(book1)
-library.add_book(book2)
+# # Adding books
+# book1 = Book("The Great Gatsby", "F. Scott Fitzgerald", "1925-04-10", "Fiction")
+# book2 = Book("To Kill a Mockingbird", "Harper Lee", "1960-07-11", "Fiction")
+# library.add_book(book1)
+# library.add_book(book2)
 
-# Updating a book
-library.update_book(1, new_title="The Great Gatsby (Updated)", new_author="F. S. Fitzgerald (Updated)")
+# # Updating a book
+# library.update_book(1, new_title="The Great Gatsby (Updated)", new_author="F. S. Fitzgerald (Updated)")
 
-# Deleting a book
-library.delete_book(2)
+# # Deleting a book
+# library.delete_book(2)
 
 # Print the updated library
 books = session.query(Book).all()
