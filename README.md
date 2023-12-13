@@ -14,7 +14,8 @@ Welcome to the Book Library CLI project! This command-line interface (CLI) allow
 
 
 
-
+## Project Proposal link
+https://docs.google.com/document/d/1bzhlarU3lFLDtevJZPt_-_D6prI-eVst-goBeD6fYd8/edit?usp=sharing
 
 
 
