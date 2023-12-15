@@ -1,12 +1,9 @@
-
-
 from sqlalchemy import create_engine, Column, Integer, String, Date, Boolean
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
+from prettytable import PrettyTable
 
 engine = create_engine('sqlite:///library.db', echo=False)
-
 Base = declarative_base()
 
 class Book(Base):
@@ -17,74 +14,33 @@ class Book(Base):
     author = Column(String())
     publication_date = Column(Date())
     genre = Column(String())
-    availability = Column(Boolean())
+    availability = Column(Boolean(), default=True)
 
-    def __init__(self, title, author, publication_date, genre, availability=True):
-        self.id = None
+    def __init__(self, title, author, publication_date, genre, availability=None):
         self.title = title
         self.author = author
         self.publication_date = datetime.strptime(publication_date, "%Y-%m-%d").date()
         self.genre = genre
         self.availability = availability
 
-Session = sessionmaker(bind=engine)
-
-    # Base.metadata.create_all(engine)
-    # Session = sessionmaker(bind=engine)
-    # session = Session()
-
-    
-                 # Testing for adding data to book table and query
-# def testing_book(session):
-#         great_Gatsby = Book(
-#             title="The Great Gabsy",
-#             author="Matthew",
-#             publication_date="1782-09-09",
-#             genre="Fiction",
-#             availability=True
-#         )
-
-#         session.add(great_Gatsby)
-#         session.commit()
-
-        
-#     # Correct the date format in the filter
-#         query = session.query(Book).filter_by(author="Matthew", publication_date="1782-09-09").first()
-
-#         if query:
-#           print(f"Book found: {query.title}")
-#         else:
-#           print("Book not found.")
-
-#     # Close the session
-#         session.close()
-
-# # Call the test function with the existing session
-# Session = sessionmaker(bind=engine)
-# current_session = Session()
-# testing_book(current_session)
-
-
-
+    def __repr__(self):
+        return repr({"id": self.id, "title": self.title, "author": self.author, "publication_date": self.publication_date, "genre": self.genre, "availability": self.availability})
 
 class User(Base):
-      __tablename__ = 'users'
+    __tablename__ = 'users'
 
-      id = Column(Integer(), primary_key=True)
-      name = Column(String())
-      email = Column(String())
-      phone_number = Column(Integer())
+    id = Column(Integer(), primary_key=True)
+    name = Column(String())
+    email = Column(String())
+    phone_number = Column(Integer())
 
-      def __init__(self, name, email, phone_number):
-           self.name = name
-           self.email = email
-           self.phone_number = phone_number
+    def __init__(self, name, email, phone_number):
+        self.name = name
+        self.email = email
+        self.phone_number = phone_number
 
-      def __repr__(self):
-           return f"{self.name}"\
-                + f"{self.email}"\
-                + f"{self.phone_number}"
-      
+    def __repr__(self):
+        return repr({"id": self.id, "name": self.name, "email": self.email, "phone_number": self.phone_number})
 
 class Book_checkout(Base):
     __tablename__='bookCheckout'
@@ -96,45 +52,80 @@ class Book_checkout(Base):
     checkoutDate = Column(Date())
     returnDate = Column(Date())
 
-    def __init__(self, id, bookID, userID, genre, checkoutDate, returnDate):
+    def __init__(self, bookID, userID, genre, checkoutDate, returnDate):
         self.bookID = bookID
         self.userID = userID
         self.genre = genre
         self.checkoutDate = checkoutDate
         self.returnDate = returnDate
-    
+
     def __repr__(self):
-           return f"{self.bookID}"\
-                + f"{self.userID}"\
-                + f"{self.genre}"\
-                + f"{self.checkoutDate}"\
-                + f"{self.returnDate}"
-      
-      
+        return repr({"id": self.id, "bookID": self.bookID, "userID": self.userID, "genre": self.genre, "checkoutDate": self.checkoutDate, "returnDate": self.returnDate})
+
 Base.metadata.create_all(engine)
 
-          #testing user table 
+def showall(data, table_name):
+    """Display all elements in the given data."""
+    if not data:
+        print(f"No records found in {table_name}")
+        return
 
-# def test_users(session):
-#      mike = User(name="mike",email= "mike@gmail.com", phone_number=709090909)
-#      session.add(mike)
-#      session.commit()
+    table = PrettyTable()
+    table.field_names = data[0].__dict__.keys()
 
-#      query = session.query(User).filter_by(name="mike").first()
+    for item in data:
+        table.add_row(item.__dict__.values())
 
-#      if query:
-#           print(query.email)
-#      else:
-#           print("None")
+    print(f"{table_name.capitalize()}:\n{table}")
 
-# Session = sessionmaker(bind=engine)
-# session = Session()
+# Create a session
+Session = sessionmaker(bind=engine)
+session = Session()
 
-# test_users(session)
+# Insert data into the 'books' table for testing
+great_Gatsby = Book(
+    title="The Great Gatsby",
+    author="F. Scott Fitzgerald",
+    publication_date="1925-04-10",
+    genre="Fiction",
+)
 
+session.add(great_Gatsby)
+session.commit()
 
+# Query and display the contents of the 'books' table
+books = session.query(Book).all()
+showall(books, 'books')
 
+# Insert data into the 'users' table for testing
+new_user = User(
+    name="John Doe",
+    email="john.doe@example.com",
+    phone_number=1234567890
+)
 
+session.add(new_user)
+session.commit()
 
+# Query and display the contents of the 'users' table
+users = session.query(User).all()
+showall(users, 'users')
 
+# Insert data into the 'bookCheckout' table for testing
+checkout_entry = Book_checkout(
+    bookID=1,  # Assuming bookID corresponds to the ID of 'The Great Gatsby'
+    userID=1,  # Assuming userID corresponds to the ID of 'John Doe'
+    genre="Fiction",
+    checkoutDate=datetime.now(),
+    returnDate=datetime.now()
+)
 
+session.add(checkout_entry)
+session.commit()
+
+# Query and display the contents of the 'bookCheckout' table
+book_checkouts = session.query(Book_checkout).all()
+showall(book_checkouts, 'bookCheckouts')
+
+# Close the session
+session.close()
