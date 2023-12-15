@@ -20,15 +20,52 @@ class Book(Base):
     availability = Column(Boolean())
 
     def __init__(self, title, author, publication_date, genre, availability=True):
+        self.id = None
         self.title = title
         self.author = author
         self.publication_date = datetime.strptime(publication_date, "%Y-%m-%d").date()
         self.genre = genre
         self.availability = availability
 
+Session = sessionmaker(bind=engine)
+
     # Base.metadata.create_all(engine)
     # Session = sessionmaker(bind=engine)
     # session = Session()
+
+    
+                 # Testing for adding data to book table and query
+# def testing_book(session):
+#         great_Gatsby = Book(
+#             title="The Great Gabsy",
+#             author="Matthew",
+#             publication_date="1782-09-09",
+#             genre="Fiction",
+#             availability=True
+#         )
+
+#         session.add(great_Gatsby)
+#         session.commit()
+
+        
+#     # Correct the date format in the filter
+#         query = session.query(Book).filter_by(author="Matthew", publication_date="1782-09-09").first()
+
+#         if query:
+#           print(f"Book found: {query.title}")
+#         else:
+#           print("Book not found.")
+
+#     # Close the session
+#         session.close()
+
+# # Call the test function with the existing session
+# Session = sessionmaker(bind=engine)
+# current_session = Session()
+# testing_book(current_session)
+
+
+
 
 class User(Base):
       __tablename__ = 'users'
@@ -99,37 +136,5 @@ Base.metadata.create_all(engine)
 
 
 
-
-
-
-                 # Testing for adding data to book table and query
-# def testing_book(session):
-#         great_Gatsby = Book(
-#             title="The Great Gabsy",
-#             author="Matthew",
-#             publication_date="1782-09-09",
-#             genre="Fiction",
-#             availability=True
-#         )
-
-#         session.add(great_Gatsby)
-#         session.commit()
-
-        
-#     # Correct the date format in the filter
-#         query = session.query(Book).filter_by(author="Matthew", publication_date="1782-09-09").first()
-
-#         if query:
-#           print(f"Book found: {query.title}")
-#         else:
-#           print("Book not found.")
-
-#     # Close the session
-#         session.close()
-
-# # Call the test function with the existing session
-# Session = sessionmaker(bind=engine)
-# current_session = Session()
-# testing_book(current_session)
 
 

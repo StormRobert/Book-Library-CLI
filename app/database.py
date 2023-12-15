@@ -15,7 +15,7 @@ def delete_book(session, book_id):
         session.commit()
         print(f"Book with id {book_id} deleted from db.")
     else:
-        print(f"Book with id {book_id} not found.")
+        print(f"Book not found.")
 
 def update_book(session, book_id, new_title, new_author, new_publication_date, new_genre, new_availability):
     book = session.query(Book).filter_by(id=book_id).first()
@@ -28,4 +28,4 @@ def update_book(session, book_id, new_title, new_author, new_publication_date, n
         session.commit()
         print(f"Book with id {book_id} updated.")
     else:
-        print(f"Book with id {book_id} not found.")
+        print(f"Book not found")
