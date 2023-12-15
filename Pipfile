@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 package-name = "*"
+console = "*"
+datetime = "*"
+typer = "*"
+table = "*"
 
 [dev-packages]
 importlib-metadata = "6.0.0"
