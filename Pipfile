@@ -5,10 +5,15 @@ name = "pypi"
 
 [packages]
 package-name = "*"
+console = "*"
+datetime = "*"
+typer = "*"
+table = "*"
 
 [dev-packages]
 importlib-metadata = "6.0.0"
 importlib-resources = "5.10.0"
+sqlalchemy = "1.4.41"
 
 [requires]
 python_version = "3.10"
