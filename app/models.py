@@ -4,7 +4,6 @@ from datetime import datetime
 from prettytable import PrettyTable
 
 engine = create_engine('sqlite:///library.db', echo=False)
-
 Base = declarative_base()
 
 class Book(Base):
@@ -15,14 +14,17 @@ class Book(Base):
     author = Column(String())
     publication_date = Column(Date())
     genre = Column(String())
-    availability = Column(Boolean())
+    availability = Column(Boolean(), default=True)
 
-    def __init__(self, title, author, publication_date, genre, availability=True):
+    def __init__(self, title, author, publication_date, genre, availability=None):
         self.title = title
         self.author = author
         self.publication_date = datetime.strptime(publication_date, "%Y-%m-%d").date()
         self.genre = genre
         self.availability = availability
+
+    def __repr__(self):
+        return repr({"id": self.id, "title": self.title, "author": self.author, "publication_date": self.publication_date, "genre": self.genre, "availability": self.availability})
 
 class User(Base):
     __tablename__ = 'users'
@@ -36,6 +38,9 @@ class User(Base):
         self.name = name
         self.email = email
         self.phone_number = phone_number
+
+    def __repr__(self):
+        return repr({"id": self.id, "name": self.name, "email": self.email, "phone_number": self.phone_number})
 
 class Book_checkout(Base):
     __tablename__='bookCheckout'
@@ -54,6 +59,8 @@ class Book_checkout(Base):
         self.checkoutDate = checkoutDate
         self.returnDate = returnDate
 
+    def __repr__(self):
+        return repr({"id": self.id, "bookID": self.bookID, "userID": self.userID, "genre": self.genre, "checkoutDate": self.checkoutDate, "returnDate": self.returnDate})
 
 Base.metadata.create_all(engine)
 
@@ -70,7 +77,6 @@ def showall(data, table_name):
         table.add_row(item.__dict__.values())
 
     print(f"{table_name.capitalize()}:\n{table}")
-# ... (previous code)
 
 # Create a session
 Session = sessionmaker(bind=engine)
@@ -82,7 +88,6 @@ great_Gatsby = Book(
     author="F. Scott Fitzgerald",
     publication_date="1925-04-10",
     genre="Fiction",
-    availability=True
 )
 
 session.add(great_Gatsby)
@@ -124,4 +129,3 @@ showall(book_checkouts, 'bookCheckouts')
 
 # Close the session
 session.close()
-
