@@ -9,6 +9,8 @@ console = "*"
 datetime = "*"
 typer = "*"
 table = "*"
+prettytable = "*"
+numpy = "*"
 
 [dev-packages]
 importlib-metadata = "6.0.0"
