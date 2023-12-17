@@ -65,11 +65,11 @@ def delete_user(session, user_id):
 def get_all_checkouts(session):
     return session.query(Book_checkout).all()
 
-def checkout_book(session, book_id, user_id, genre, checkout_date=datetime.now()):
+def checkout_book(session, book_id, user_id, genre, checkout_date=datetime.now(), return_date=datetime ):
     book = session.query(Book).get(book_id)
     user = session.query(User).get(user_id)
     if book and user:
-        new_checkout = Book_checkout(book=book, user=user, genre=genre, checkoutDate=checkout_date)
+        new_checkout = Book_checkout(book=book, user=user, genre=genre, checkoutDate=checkout_date, returnDate=return_date )
         session.add(new_checkout)
         session.commit()
     else:
