@@ -52,8 +52,8 @@ def new_book(title: str, author: str, publication_date: datetime, genre: str, av
     console.print(f"[bold green]Book added successfully![/bold green]")
 
 @app.command()
-def update_book(book_id: int, **kwargs):
-    update_book(session, book_id, **kwargs)
+def modify_book(book_id: int, title: str, author: str, publication_date: datetime, genre: str): 
+    update_book(session, book_id, title, author, publication_date, genre)
     console.print(f"[bold blue]Book updated successfully![/bold blue]")
 
 @app.command()
@@ -77,19 +77,26 @@ def borrow_book(book_id: int, user_id: int, genre: str):
     console.print(f"[bold green]Book checked out successfully![/bold green]")
 
 @app.command()
-def return_book(checkout_id: int):
+def finish_book(checkout_id: int):
     return_book(session, checkout_id)
     console.print(f"[bold blue]Book returned successfully![/bold blue]")
 
 @app.command()
 def similar_books(user_id: int):
-    recommend_books(session, user_id)
+    sampled = recommend_books(session, user_id)
     console.print(f"[bold magenta]Books recommended successfully![/bold magenta]")
+    displayy_table(sampled)
 
 def display_table(data):
     headers = data[0].__dict__.keys() if data else []
-    rows = [item.__dict__.values() for item in data]
-    console.print(tabulate(rows, headers=headers, tablefmt="pretty"))
-
+    rows = [[getattr(item, header) for header in headers] for item in data]
+    table = tabulate(rows, headers=headers, tablefmt="pretty")
+    print(table)
+   
+def displayy_table(data):
+    headers = data[0].__dict__.keys() if data else []
+    rows = [[getattr(item, header) for header in headers] for item in data]
+    table = tabulate(rows, headers=headers, tablefmt="pretty")
+    print(table)
 if __name__ == "__main__":
     app()
