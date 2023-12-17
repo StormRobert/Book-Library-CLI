@@ -97,6 +97,7 @@ def displayy_table(data):
     headers = data[0].__dict__.keys() if data else []
     rows = [[getattr(item, header) for header in headers] for item in data]
     table = tabulate(rows, headers=headers, tablefmt="pretty")
-    print(table)
+    print(data)
+    
 if __name__ == "__main__":
     app()
