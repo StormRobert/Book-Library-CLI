@@ -95,11 +95,21 @@ def remove_user(user_id: int):
 def borrow_book(book_id: int, user_id: int, genre: str):
     checkout_book(session, book_id, user_id, genre)
     console.print(f"[bold green]Book checked out successfully![/bold green]")
+    # display 
+    checkouts = get_all_checkouts(session)
+    console.print("\n[bold magenta]Checkouts:[/bold magenta]")
+    display_table(checkouts)
+
+    
 
 @app.command()
 def finish_book(checkout_id: int):
     return_book(session, checkout_id)
     console.print(f"[bold blue]Book returned successfully![/bold blue]")
+    # display 
+    checkouts = get_all_checkouts(session)
+    console.print("\n[bold magenta]Checkouts:[/bold magenta]")
+    display_table(checkouts)
 
 @app.command()
 def similar_books(user_id: int):

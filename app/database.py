@@ -44,7 +44,7 @@ def delete_book(session, book_id):
     else:
         print(f"Book with ID {book_id} not found.")
 
-<<<<<<< HEAD
+
 def update_book(session, book_id, new_title, new_author, new_publication_date, new_genre, new_availability):
     book = session.query(Book).filter_by(id=book_id).first()
     if book:
@@ -56,17 +56,7 @@ def update_book(session, book_id, new_title, new_author, new_publication_date, n
         session.commit()
         return (f"Book with id {book_id} updated.")
     
-def add_user(session, user):
-    existing_user = session.query(User).filter_by(name = user.name).first()
-    if existing_user:
-        return f"{user.name} exists"
-    else:
-       session.add(user)
-       session.commit()  
-       return f"{user.name} added to the users table"  
-    
-def delete_user(session,user):
-=======
+
 # ------------------------Methods for the user table
 def get_all_users(session):
     return session.query(User).all()
@@ -78,7 +68,6 @@ def add_user(session, name, email, phone_number):
 
 def delete_user(session, user_id):
     user = session.query(User).get(user_id)
->>>>>>> 8b1b8e6f8d4964232f59e16200c4068c43a7345e
     if user:
         session.delete(user)
         session.commit()
@@ -103,6 +92,7 @@ def return_book(session, checkout_id, return_date=datetime.now()):
     checkout = session.query(Book_checkout).get(checkout_id)
     if checkout:
         checkout.returnDate = return_date
+        session.delete(checkout)
         session.commit()
     else:
         print(f"Checkout with ID {checkout_id} not found.")
@@ -114,6 +104,7 @@ def recommend_books(session, user_id):
     if not user_checkouts:
         print("No past checkouts found for this user.")
         return
+
 
     # Count the occurrences of each genre in the user's checkouts
     genre_counts = {}
