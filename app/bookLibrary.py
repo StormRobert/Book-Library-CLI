@@ -1,49 +1,123 @@
-#!/usr/bin/env python3
+from typing import Optional
+from tabulate import tabulate
+from rich.console import Console
+import typer
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from models import Base, Book,User,Book_checkout
-from database import add_book,update_book, delete_book,add_user, delete_user
+from database import (
+    get_all_books,
+    add_book,
+    update_book,
+    delete_book,
+    get_all_users,
+    add_user,
+    delete_user,
+    get_all_checkouts,
+    checkout_book,
+    return_book,
+    recommend_books
+)
+from models import Base
+
+database_url = 'sqlite:///library.db'
+engine = create_engine(database_url, echo=False)
+Session = sessionmaker(bind=engine)
+session = Session()
+
+Base.metadata.create_all(engine)
+
+app = typer.Typer()
+
+console = Console()
+
+@app.command()
+def show_library():
+    books = get_all_books(session)
+    users = get_all_users(session)
+    checkouts = get_all_checkouts(session)
+
+    console.print("\n[bold green]Books:[/bold green]")
+    display_table(books)
+
+    console.print("\n[bold blue]Users:[/bold blue]")
+    display_table(users)
+
+    console.print("\n[bold magenta]Checkouts:[/bold magenta]")
+    display_table(checkouts)
+
+@app.command()
+def new_book(title: str, author: str, publication_date: datetime, genre: str, availability: Optional[bool] = True):
+    add_book(session, title, author, publication_date, genre, availability)
+    console.print(f"[bold green]Book added successfully![/bold green]")
+    #display books
+    books = get_all_books(session)
+    console.print("\n[bold green]Books:[/bold green]")
+    display_table(books)
+
+@app.command()
+def modify_book(book_id: int, title: str, author: str, publication_date: datetime, genre: str): 
+    update_book(session, book_id, title, author, publication_date, genre)
+    console.print(f"[bold blue]Book updated successfully![/bold blue]")
+    #display books
+    books = get_all_books(session)
+    console.print("\n[bold green]Books:[/bold green]")
+    display_table(books)
+
+@app.command()
+def remove_book(book_id: int):
+    delete_book(session, book_id)
+    console.print(f"[bold red]Book deleted successfully![/bold red]")
+    #display books
+    books = get_all_books(session)
+    console.print("\n[bold green]Books:[/bold green]")
+    display_table(books)
+
+@app.command()
+def new_user(name: str, email: str, phone_number: int):
+    add_user(session, name, email, phone_number)
+    console.print(f"[bold blue]User added successfully![/bold blue]")
+    #display users
+    users = get_all_users(session)
+    console.print("\n[bold blue]Users:[/bold blue]")
+    display_table(users)
+
+@app.command()
+def remove_user(user_id: int):
+    delete_user(session, user_id)
+    console.print(f"[bold red]User deleted successfully![/bold red]")
+    #display users
+    users = get_all_users(session)
+    console.print("\n[bold blue]Users:[/bold blue]")
+    display_table(users)
+
+@app.command()
+def borrow_book(book_id: int, user_id: int, genre: str):
+    checkout_book(session, book_id, user_id, genre)
+    console.print(f"[bold green]Book checked out successfully![/bold green]")
+
+@app.command()
+def finish_book(checkout_id: int):
+    return_book(session, checkout_id)
+    console.print(f"[bold blue]Book returned successfully![/bold blue]")
+
+@app.command()
+def similar_books(user_id: int):
+    sampled = recommend_books(session, user_id)
+    console.print(f"[bold magenta]Books recommended successfully![/bold magenta]")
+    displayy_table(sampled)
+
+def display_table(data):
+    headers = data[0].__dict__.keys() if data else []
+    rows = [[getattr(item, header) for header in headers] for item in data]
+    table = tabulate(rows, headers=headers, tablefmt="pretty")
+    print(table)
+   
+def displayy_table(data):
+    headers = data[0].__dict__.keys() if data else []
+    rows = [[getattr(item, header) for header in headers] for item in data]
+    table = tabulate(rows, headers=headers, tablefmt="pretty")
+    print(data)
 
 if __name__ == "__main__":
-    engine = create_engine('sqlite:///library.db')
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    
-
-    #BOOK TABLE METHODS
-                # ADDING A BOOK TO THE TABLE
-    Vampire_diaries = Book(title="Vampire Diaries", author="MAtthew ",publication_date=datetime.strptime("1997-10-22", "%Y-%m-%d").date(), genre="Fiction", availability=1)
-    print(f" {add_book(session, Vampire_diaries)} ")
-                #UPDATING A BOOK THAT IS ALREADY IN THE DATABASE
-    existing_book = session.query(Book).filter_by(title="Vampire Diaries").first()
-    if existing_book:
-        existing_book.title = "Vampires"
-        existing_book.author = "ELIJAH"
-        existing_book.publication_date = datetime.strptime("1997-10-22", "%Y-%m-%d").date()
-        existing_book.genre = "Adventure"
-        existing_book.availability = 1
-        session.commit()
-        print(f"{update_book(session, existing_book.id, 'Vampires', 'ELIJAH', datetime.strptime('1997-10-22', '%Y-%m-%d').date(), 'Adventure', 1)}")
-    else:
-        print("Book not found")
-
-                #DELETING AN EXISTING BOOK
-    book = session.query(Book).filter_by(title="Streamlined holistic function").first()
-    if book:
-        print(f"{delete_book(session, book)}")
-    else:
-        print("Book non-existent because it's deleted")
-
-
-                #ADDING A NEW USER TO THE USERS TABLE
-    Messi = User(name="Messi", email="messi@gmail.com", phone_number=254722806547)
-    print(f"{add_user(session,Messi)}")
-                #DELETING AN EXISTING USER FROM THE USERS TABLE
-    Jacob = session.query(User).filter_by(name = "Jacob Little").first()
-    print({delete_user(session, Jacob)})
-                
-                
-
+    app()

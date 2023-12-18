@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, Date, Boolean, ForeignKey
-from sqlalchemy.orm import declarative_base, sessionmaker, relationship
-from datetime import datetime
+from sqlalchemy.orm import declarative_base, relationship
 
 
 engine = create_engine('sqlite:///library.db', echo=False)
