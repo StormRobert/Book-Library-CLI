@@ -50,26 +50,46 @@ def show_library():
 def new_book(title: str, author: str, publication_date: datetime, genre: str, availability: Optional[bool] = True):
     add_book(session, title, author, publication_date, genre, availability)
     console.print(f"[bold green]Book added successfully![/bold green]")
+    #display books
+    books = get_all_books(session)
+    console.print("\n[bold green]Books:[/bold green]")
+    display_table(books)
 
 @app.command()
 def modify_book(book_id: int, title: str, author: str, publication_date: datetime, genre: str): 
     update_book(session, book_id, title, author, publication_date, genre)
     console.print(f"[bold blue]Book updated successfully![/bold blue]")
+    #display books
+    books = get_all_books(session)
+    console.print("\n[bold green]Books:[/bold green]")
+    display_table(books)
 
 @app.command()
 def remove_book(book_id: int):
     delete_book(session, book_id)
     console.print(f"[bold red]Book deleted successfully![/bold red]")
+    #display books
+    books = get_all_books(session)
+    console.print("\n[bold green]Books:[/bold green]")
+    display_table(books)
 
 @app.command()
 def new_user(name: str, email: str, phone_number: int):
     add_user(session, name, email, phone_number)
     console.print(f"[bold blue]User added successfully![/bold blue]")
+    #display users
+    users = get_all_users(session)
+    console.print("\n[bold blue]Users:[/bold blue]")
+    display_table(users)
 
 @app.command()
 def remove_user(user_id: int):
     delete_user(session, user_id)
     console.print(f"[bold red]User deleted successfully![/bold red]")
+    #display users
+    users = get_all_users(session)
+    console.print("\n[bold blue]Users:[/bold blue]")
+    display_table(users)
 
 @app.command()
 def borrow_book(book_id: int, user_id: int, genre: str):
@@ -98,6 +118,6 @@ def displayy_table(data):
     rows = [[getattr(item, header) for header in headers] for item in data]
     table = tabulate(rows, headers=headers, tablefmt="pretty")
     print(data)
-    
+
 if __name__ == "__main__":
     app()
