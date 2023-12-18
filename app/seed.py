@@ -67,8 +67,6 @@ if __name__ == '__main__':
     print("Total books in library: ", session.query(Book).count())
     print("First user is:", session.query(User).first())
     session.close()
-                
-                
 
    
 

@@ -44,4 +44,6 @@ if __name__ == "__main__":
                 #DELETING AN EXISTING USER FROM THE USERS TABLE
     Jacob = session.query(User).filter_by(name = "Jacob Little").first()
     print({delete_user(session, Jacob)})
+                
+                
 

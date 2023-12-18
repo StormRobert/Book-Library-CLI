@@ -31,7 +31,7 @@ def update_book(session, book_id, new_title, new_author, new_publication_date, n
         book.genre = new_genre
         book.availability = new_availability
         session.commit()
-        return (f"Book with id {book_id}updated.")
+        return (f"Book with id {book_id} updated.")
     
 def add_user(session, user):
     existing_user = session.query(User).filter_by(name = user.name).first()
